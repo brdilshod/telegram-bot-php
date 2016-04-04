@@ -1,7 +1,7 @@
 <?php
 
 include('TelegramBotAPI.php');
-$tl = new TelegramBotAPI('194881124:AAGXX51wm75Y5NAgY5pIMQeeCFlbw3w-mdM');
+$tl = new TelegramBotAPI('194881124:-mdM');
 $chat_id = $tl->getChatId();
 $message = $tl->getMessage();
 if($message == 'qalesan') {
