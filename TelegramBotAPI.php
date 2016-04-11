@@ -3,7 +3,7 @@
 class TelegramBotAPI {
 
     /**
-     * BOT Token and BOT Name
+     * BOT Token
      *
      * @var
      */
@@ -80,8 +80,7 @@ class TelegramBotAPI {
         510 => 'Not Extended', // RFC2774
         511 => 'Network Authentication Required', // RFC6585
     ];
-	
-	public $fileFields = array('photo', 'document', 'audio', 'video', 'voice');
+    public $fileFields = array('photo', 'document', 'audio', 'video', 'voice');
 
     /**
      * Default http status code
@@ -119,7 +118,7 @@ class TelegramBotAPI {
     protected $input;
 
     public function __construct($apiKey) {
-        $this->apiKey = $apiKey;        
+        $this->apiKey = $apiKey;
         $this->curl = curl_init();
         $this->input = file_get_contents('php://input');
     }
@@ -139,15 +138,15 @@ class TelegramBotAPI {
             CURLOPT_POST => null,
             CURLOPT_POSTFIELDS => null
         ];
-		foreach($this->fileFields as $field) {
-			if (isset($data[$field])) {
-				$data[$field] = new CURLFile(realpath($data['photo']));			
-				$options[CURLOPT_HTTPHEADER] = array(
-					"Content-Type:multipart/form-data"
-				);            
-			}
-		}        
-		if ($data) {
+        foreach ($this->fileFields as $field) {
+            if (isset($data[$field])) {
+                $data[$field] = new CURLFile(realpath($data['photo']));
+                $options[CURLOPT_HTTPHEADER] = array(
+                    "Content-Type:multipart/form-data"
+                );
+            }
+        }
+        if ($data) {
             $options[CURLOPT_POST] = true;
             $options[CURLOPT_POSTFIELDS] = $data;
         }
@@ -161,7 +160,7 @@ class TelegramBotAPI {
         if (!$response->ok) {
             throw new Exception($response->description, $response->error_code);
         }
-		
+
         return $response->result;
     }
 
@@ -345,17 +344,17 @@ class TelegramBotAPI {
         return $result;
     }
 
-	/**
+    /**
      * Getting chat_id    
      * 
      * @return integer
      */
     public function getChatId() {
-        $input = $this->jsonParse($this->input);		
-        return $input->message->chat->id;;
+        $input = $this->jsonParse($this->input);
+        return $input->message->chat->id;
     }
 
-	/**
+    /**
      * Getting message    
      * 
      * @return string
@@ -363,6 +362,17 @@ class TelegramBotAPI {
     public function getMessage() {
         $input = $this->jsonParse($this->input);
         return $input->message->text;
+    }
+
+    public function enableMySQLLog($params, $botName) {
+        extract($params);
+        try {
+            $db = new PDO("mysql:host=$host;dbname=$database;charset=utf8", $user, $password);            
+            $query = $db->prepare();
+            $query->excute(array());
+        } catch (PDOException $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
+        }
     }
 
 }
